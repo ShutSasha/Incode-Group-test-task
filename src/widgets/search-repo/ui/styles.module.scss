@@ -1,0 +1,13 @@
+.repo_links_list {
+   display: flex;
+   margin: 15px 0 20px;
+}
+
+.repo_links_list > *::after {
+   content: ">";
+   margin: 0 10px;
+}
+
+.repo_links_list > *:last-child::after {
+   content: "";
+}

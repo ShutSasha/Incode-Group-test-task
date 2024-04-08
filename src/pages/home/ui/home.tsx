@@ -4,7 +4,7 @@ import { Layout } from '../../../shared'
 
 export const Home: FC = () => {
    return (
-      <Layout>
+      <Layout padding='20px 10px'>
          <SearchRepo />
          <div>columns</div>
       </Layout>
