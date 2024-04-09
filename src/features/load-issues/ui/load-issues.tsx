@@ -1,24 +1,63 @@
-import { FC, useEffect, useState } from 'react'
+import { Dispatch, FC, SetStateAction, useContext, useState } from 'react'
 import { DefaultInput, FlexibleButton } from '../../../shared'
 import styles from './styles.module.scss'
-import { getUserRepo } from '../../../shared/api'
+import { getClosedIssues, getToDoIssues, getUserRepo } from '../../../shared/api'
+import { getOwnerAndRepoName } from '../helpers/getOwnerAndRepoName'
+import { observer } from 'mobx-react-lite'
+import { Context } from '../../../main'
 
-export const LoadIssues: FC = () => {
+interface LoadIssuesProps {
+   setIsNotFound: Dispatch<SetStateAction<boolean>>
+}
+
+export const LoadIssues: FC<LoadIssuesProps> = observer(({ setIsNotFound }) => {
+   const { store } = useContext(Context)
    const [inputLinkRepo, setInputLinkRepo] = useState<string>('')
-   //https://github.com/facebook/react
-
-   useEffect(() => {
-      console.log(inputLinkRepo)
-   }, [inputLinkRepo])
 
    const handleSendLoadRepo = async () => {
-      const repsonse = await getUserRepo({ owner: 'facebook', repo_name: 'react' })
-      console.log(repsonse.data)
+      try {
+         const { owner, repo } = getOwnerAndRepoName(inputLinkRepo)
+         const UserRepoResponse = await getUserRepo({ owner: owner, repo_name: repo })
+
+         if (UserRepoResponse.status === 200) {
+            store.setOwnerUrl(UserRepoResponse.data.owner.html_url)
+            store.setOwnerName(owner)
+
+            store.setRepoName(repo)
+            store.setRepoUrl(UserRepoResponse.data.html_url)
+
+            store.setStargazersCount(UserRepoResponse.data.stargazers_count)
+
+            setIsNotFound(false)
+
+            const ToDoIssuesResponse = await getToDoIssues({ owner: owner, repo_name: repo })
+            store.setToDoIssues(ToDoIssuesResponse.data)
+
+            const OpenIssues = ToDoIssuesResponse.data.filter((issue: any) => issue.assignee)
+            store.setOpenIssues(OpenIssues)
+
+            const ClosedIssuesResponse = await getClosedIssues({ owner: owner, repo_name: repo })
+            store.setClosedIssues(ClosedIssuesResponse.data)
+         }
+      } catch (error) {
+         console.error(error)
+         if (error) {
+            setIsNotFound(true)
+            store.setToDoIssues([])
+            store.setOpenIssues([])
+            store.setClosedIssues([])
+         }
+      }
    }
 
    return (
       <div className={styles.load_issues_container}>
-         <DefaultInput value={inputLinkRepo} inputChange={setInputLinkRepo} placeholder='Enter repo URL' />
+         <DefaultInput
+            value={inputLinkRepo}
+            inputChange={setInputLinkRepo}
+            handleEnterPress={handleSendLoadRepo}
+            placeholder='Enter repo URL'
+         />
          <FlexibleButton
             handleClick={handleSendLoadRepo}
             text='Load issues'
@@ -34,4 +73,4 @@ export const LoadIssues: FC = () => {
          />
       </div>
    )
-}
+})

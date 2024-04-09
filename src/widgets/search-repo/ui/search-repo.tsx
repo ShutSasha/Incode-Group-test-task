@@ -1,24 +1,29 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useContext, useState } from 'react'
 import { LoadIssues } from '../../../features'
-import { LinkTo } from '../../../entities'
-import styles from './styles.module.scss'
+import { observer } from 'mobx-react-lite'
+import { Context } from '../../../main'
+import { RepoInfo } from './repo-info'
 
-export const SearchRepo: FC = () => {
-   const [linkText, setLinkText] = useState<string | undefined>(undefined)
-   const [link, setLink] = useState<string | undefined>(undefined)
-
-   useEffect(() => {
-      setLinkText('Facebook')
-      setLink('https://github.com/incodellc/github-kanban-test-task')
-   }, [])
+export const SearchRepo: FC = observer(() => {
+   const { store } = useContext(Context)
+   const { owner_name, owner_url, repo_name, repo_url, stargazers_count } = store
+   const [isNotFound, setIsNotFound] = useState<boolean>(false)
 
    return (
       <>
-         <LoadIssues />
-         <div className={styles.repo_links_list}>
-            {linkText && link && <LinkTo style={{ color: '#4159cc', fontSize: '20px' }} text={linkText} link={link} />}
-            {linkText && link && <LinkTo style={{ color: '#4159cc', fontSize: '20px' }} text={linkText} link={link} />}
-         </div>
+         <LoadIssues setIsNotFound={setIsNotFound} />
+         {owner_name && repo_name && owner_url && repo_url && !isNotFound && (
+            <RepoInfo
+               owner_name={owner_name}
+               owner_url={owner_url}
+               repo_name={repo_name}
+               repo_url={repo_url}
+               stargazers_count={stargazers_count}
+            />
+         )}
+         {isNotFound && (
+            <p style={{ margin: '15px 0 20px', color: '#ff6666' }}>Repo hasn't founded try to enter repo url correct</p>
+         )}
       </>
    )
-}
+})

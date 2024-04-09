@@ -1,0 +1,31 @@
+.column_title {
+   text-align: center;
+   margin-bottom: 20px;
+   font-size: 24px;
+   font-weight: 500;
+}
+
+.column_container {
+   padding: 15px 20px;
+   background-color: #ced4da;
+   height: 80vh;
+   border-radius: 8px;
+   overflow-y: auto;
+   -ms-overflow-style: none; // Hide scrollline in IE and Edge
+
+   // Hide scrollline in Chrome and Safari
+   &::-webkit-scrollbar {
+      display: none;
+   }
+
+   // Hide scrollline in Firefox
+   & {
+      scrollbar-width: none; /* Скрыть полосу прокрутки в Firefox */
+   }
+
+   // Hide scrollline in Firefox
+   & {
+      scrollbar-width: thin; /* Ширина полосы прокрутки в Firefox */
+      scrollbar-color: transparent transparent; /* Цвет полосы прокрутки в Firefox */
+   }
+}

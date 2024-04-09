@@ -9,7 +9,7 @@ interface LinkToProps {
 
 export const LinkTo: FC<LinkToProps> = ({ text, link, style }) => {
    return (
-      <Link style={{ ...style }} to={link}>
+      <Link target='_blank' style={{ ...style }} to={link}>
          {text}
       </Link>
    )
