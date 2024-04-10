@@ -1,4 +1,14 @@
-export const initialDataColums = {
+type ColumnType = {
+   id: string
+   title: string
+}
+
+type InitialDataColumnsType = {
+   columns: Record<string, ColumnType>
+   columnOrder: string[]
+}
+
+export let initialDataColums: InitialDataColumnsType = {
    columns: {
       'column-1': {
          id: 'column-1',
@@ -13,5 +23,5 @@ export const initialDataColums = {
          title: 'Done',
       },
    },
-   columnOrder: ['column-1', 'column-2', 'column-3'], // Важно, чтобы все столбцы были включены в columnOrder
+   columnOrder: ['column-1', 'column-2', 'column-3'],
 }

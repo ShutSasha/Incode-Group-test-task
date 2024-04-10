@@ -1,3 +1,5 @@
+
+
 .column_title {
    text-align: center;
    margin-bottom: 20px;
@@ -20,12 +22,12 @@
 
    // Hide scrollline in Firefox
    & {
-      scrollbar-width: none; /* Скрыть полосу прокрутки в Firefox */
+      scrollbar-width: none; 
    }
 
    // Hide scrollline in Firefox
    & {
-      scrollbar-width: thin; /* Ширина полосы прокрутки в Firefox */
-      scrollbar-color: transparent transparent; /* Цвет полосы прокрутки в Firefox */
+      scrollbar-width: thin; 
+      scrollbar-color: transparent transparent; 
    }
 }

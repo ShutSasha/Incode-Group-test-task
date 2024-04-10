@@ -1,10 +1,9 @@
 import { Dispatch, FC, SetStateAction, useContext, useState } from 'react'
 import { DefaultInput, FlexibleButton } from '../../../shared'
 import styles from './styles.module.scss'
-import { getClosedIssues, getToDoIssues, getUserRepo } from '../../../shared/api'
-import { getOwnerAndRepoName } from '../helpers/getOwnerAndRepoName'
 import { observer } from 'mobx-react-lite'
 import { Context } from '../../../main'
+import { handleSendLoadRepo } from '../helpers/handleSendLoadRepo'
 
 interface LoadIssuesProps {
    setIsNotFound: Dispatch<SetStateAction<boolean>>
@@ -14,41 +13,8 @@ export const LoadIssues: FC<LoadIssuesProps> = observer(({ setIsNotFound }) => {
    const { store } = useContext(Context)
    const [inputLinkRepo, setInputLinkRepo] = useState<string>('')
 
-   const handleSendLoadRepo = async () => {
-      try {
-         const { owner, repo } = getOwnerAndRepoName(inputLinkRepo)
-         const UserRepoResponse = await getUserRepo({ owner: owner, repo_name: repo })
-
-         if (UserRepoResponse.status === 200) {
-            store.setOwnerUrl(UserRepoResponse.data.owner.html_url)
-            store.setOwnerName(owner)
-
-            store.setRepoName(repo)
-            store.setRepoUrl(UserRepoResponse.data.html_url)
-
-            store.setStargazersCount(UserRepoResponse.data.stargazers_count)
-
-            setIsNotFound(false)
-
-            const ToDoIssuesResponse = await getToDoIssues({ owner: owner, repo_name: repo })
-            const ToDoIssues = ToDoIssuesResponse.data.filter((issue: any) => issue.assignee === null)
-            store.setToDoIssues(ToDoIssues)
-
-            const OpenIssues = ToDoIssuesResponse.data.filter((issue: any) => issue.assignee)
-            store.setOpenIssues(OpenIssues)
-
-            const ClosedIssuesResponse = await getClosedIssues({ owner: owner, repo_name: repo })
-            store.setClosedIssues(ClosedIssuesResponse.data)
-         }
-      } catch (error) {
-         console.error(error)
-         if (error) {
-            setIsNotFound(true)
-            store.setToDoIssues([])
-            store.setOpenIssues([])
-            store.setClosedIssues([])
-         }
-      }
+   const handleSendLoadRepoClick = () => {
+      handleSendLoadRepo(store, inputLinkRepo, setIsNotFound)
    }
 
    return (
@@ -56,11 +22,11 @@ export const LoadIssues: FC<LoadIssuesProps> = observer(({ setIsNotFound }) => {
          <DefaultInput
             value={inputLinkRepo}
             inputChange={setInputLinkRepo}
-            handleEnterPress={handleSendLoadRepo}
+            handleEnterPress={handleSendLoadRepoClick}
             placeholder='Enter repo URL'
          />
          <FlexibleButton
-            handleClick={handleSendLoadRepo}
+            handleClick={handleSendLoadRepoClick}
             text='Load issues'
             style={{
                padding: '5px 20px',
