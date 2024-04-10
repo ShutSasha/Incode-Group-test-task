@@ -49,4 +49,25 @@ export default class Store {
    setClosedIssues(issues: IssueCardInfo[]) {
       this.closed_issues = issues
    }
+
+   setDraggableIssue(source_index: number, destination_index: number, column_id: string) {
+      if (column_id === 'column-1') {
+         let from = this.to_do_issues[source_index]
+         let to = this.to_do_issues[destination_index]
+         this.to_do_issues[source_index] = to
+         this.to_do_issues[destination_index] = from
+      }
+      if (column_id === 'column-2') {
+         let from = this.open_issues[source_index]
+         let to = this.open_issues[destination_index]
+         this.open_issues[source_index] = to
+         this.open_issues[destination_index] = from
+      }
+      if (column_id === 'column-3') {
+         let from = this.closed_issues[source_index]
+         let to = this.closed_issues[destination_index]
+         this.closed_issues[source_index] = to
+         this.closed_issues[destination_index] = from
+      }
+   }
 }

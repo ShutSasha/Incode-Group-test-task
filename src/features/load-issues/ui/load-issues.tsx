@@ -31,7 +31,8 @@ export const LoadIssues: FC<LoadIssuesProps> = observer(({ setIsNotFound }) => {
             setIsNotFound(false)
 
             const ToDoIssuesResponse = await getToDoIssues({ owner: owner, repo_name: repo })
-            store.setToDoIssues(ToDoIssuesResponse.data)
+            const ToDoIssues = ToDoIssuesResponse.data.filter((issue: any) => issue.assignee === null)
+            store.setToDoIssues(ToDoIssues)
 
             const OpenIssues = ToDoIssuesResponse.data.filter((issue: any) => issue.assignee)
             store.setOpenIssues(OpenIssues)
