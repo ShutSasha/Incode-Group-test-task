@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react'
 import Store from '../../../app/store/store'
 import { getClosedIssues, getToDoIssues, getUserRepo } from '../../../shared/api'
-import { getOwnerAndRepoName } from './getOwnerAndRepoName'
+import { getOwnerAndRepoName } from '../../../shared/lib/index'
 
 export const handleSendLoadRepo = async (
    store: Store,
